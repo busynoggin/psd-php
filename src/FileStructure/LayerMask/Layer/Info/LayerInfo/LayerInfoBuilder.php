@@ -3,7 +3,7 @@
 namespace Psd\FileStructure\LayerMask\Layer\Info\LayerInfo;
 
 use Psd\File\FileInterface;
-use Psd\FileStructure\LayerMask\Layer\Info\LayerInfo\Artboard\Artboard;
+use Psd\FileStructure\LayerMask\Layer\Info\LayerInfo\BlendClippingElements\Artboard;
 use Psd\FileStructure\LayerMask\Layer\Info\LayerInfo\BlendClippingElements\BlendClippingElements;
 use Psd\FileStructure\LayerMask\Layer\Info\LayerInfo\BlendInteriorElements\BlendInteriorElements;
 use Psd\FileStructure\LayerMask\Layer\Info\LayerInfo\EmptyLayerInfo\EmptyLayerInfo;
@@ -22,15 +22,16 @@ use Psd\FileStructure\LayerMask\Layer\Info\LayerInfo\VectorMask\VectorMask;
 use Psd\FileStructure\LayerMask\Layer\Info\LayerInfo\VectorOrigination\VectorOrigination;
 use Psd\FileStructure\LayerMask\Layer\Info\LayerInfo\VectorStroke\VectorStroke;
 use Psd\FileStructure\LayerMask\Layer\Info\LayerInfo\VectorStrokeContent\VectorStrokeContent;
+use Psd\FileStructure\LayerMask\Layer\Info\LayerInfo\SmartObject\SmartObject;
 
-class LayerInfoBuilder implements LayerInfoBuilderInterface
-{
-    public function build(FileInterface $file, string $key): LayerInfo
-    {
+class LayerInfoBuilder implements LayerInfoBuilderInterface {
+    public function build(FileInterface $file, string $key): LayerInfo {
         $layerInfo = new EmptyLayerInfo($file);
         $name = self::NAME_EMPTY_LAYER_INFO;
-
-        if ($key === self::KEY_ARTB || $key === self::KEY_ARTD || $key === self::KEY_ABDD) {
+        if($key === self::KEY_SOLD) {
+            $layerInfo = new SmartObject($file);
+            $name = self::NAME_SMART;
+        } else if ($key === self::KEY_ARTB || $key === self::KEY_ARTD || $key === self::KEY_ABDD) {
             $layerInfo = new Artboard($file);
             $name = self::NAME_ARTBOARD;
         } else if ($key === self::KEY_CLBL) {
@@ -88,6 +89,7 @@ class LayerInfoBuilder implements LayerInfoBuilderInterface
 
         return (new LayerInfo())
             ->setLayerInfo($layerInfo)
-            ->setName($name);
+            ->setName($name)
+            ;
     }
 }
